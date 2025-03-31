@@ -4,13 +4,17 @@ import javax.swing.*;
 import java.awt.event.*;
 
 public class MenuHandler {
+
     private JMenuBar menuBar;
     private JMenu file, edit, about;
     private JMenuItem newDoc, open, save, print, exit;
     private JMenuItem copy, paste, cut, selectAll, darkMode, notepad;
-    
+
     // NEW: Undo/Redo menu items
     private JMenuItem undo, redo;
+
+    // New menu item for New Tab
+    private JMenuItem newTab;
 
     public MenuHandler(ActionListener listener) {
         menuBar = new JMenuBar();
@@ -33,14 +37,16 @@ public class MenuHandler {
 
         // NEW: Undo and Redo
         undo = new JMenuItem("Undo");
-        // Ctrl+Z for Undo
         undo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, ActionEvent.CTRL_MASK));
         undo.addActionListener(listener);
 
         redo = new JMenuItem("Redo");
-        // Ctrl+Y for Redo
         redo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, ActionEvent.CTRL_MASK));
         redo.addActionListener(listener);
+
+        // NEW: New Tab menu item
+        newTab = new JMenuItem("New Tab");
+        newTab.addActionListener(listener);  // Action listener will call the createNewTab method in Notepad
 
         // Add action listeners to existing items
         newDoc.addActionListener(listener);
@@ -56,6 +62,7 @@ public class MenuHandler {
         notepad.addActionListener(listener);
 
         // Build the File menu
+        file.add(newTab);    // Add "New Tab" to the File menu
         file.add(newDoc);
         file.add(open);
         file.add(save);
