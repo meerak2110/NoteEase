@@ -11,7 +11,14 @@ public class ThemeManager {
         this.area = area;
     }
 
+    public void setTextArea(JTextArea area) {
+        this.area = area;
+    }
+
     public void toggleTheme() {
+        if (area == null)
+            return;
+
         isDarkMode = !isDarkMode;
         if (isDarkMode) {
             area.setBackground(Color.BLACK);
