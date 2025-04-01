@@ -12,4 +12,9 @@ public class Caretaker {
     public Memento getMemento() {
         return mementoStack.isEmpty() ? null : mementoStack.pop();
     }
+    
+    // Get the stack for checking size
+    public Stack<Memento> getStack() {
+        return mementoStack;
+    }
 }
