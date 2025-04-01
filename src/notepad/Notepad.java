@@ -1,9 +1,8 @@
 package notepad;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import javax.swing.event.*;
+import javax.swing.*;
 
 public class Notepad extends JFrame implements ActionListener {
     private JTabbedPane tabbedPane;
@@ -11,14 +10,22 @@ public class Notepad extends JFrame implements ActionListener {
     private TextEditor textEditor;
     private ThemeManager themeManager;
     private MenuHandler menuHandler;
+    private JPanel statusPanel;
+    private JLabel wordCountLabel;
+    private WordCounter wordCounter;
 
     public Notepad() {
         super("Notepad");
         setSize(1920, 1080);
         setLayout(new BorderLayout());
-
+        //testing
         // Initialize the tabbed pane to handle multiple tabs
         tabbedPane = new JTabbedPane();
+
+        statusPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        wordCountLabel = new JLabel("Words: 0");
+        statusPanel.add(wordCountLabel);
+        add(statusPanel, BorderLayout.SOUTH);
 
         // Initialize helper classes
         fileManager = new FileManager(null);
@@ -37,6 +44,8 @@ public class Notepad extends JFrame implements ActionListener {
 
         // Show the window
         setVisible(true);
+
+
     }
 
     // Create a new tab with an editable JTextArea
@@ -45,21 +54,24 @@ public class Notepad extends JFrame implements ActionListener {
         area.setFont(new Font("SAN_SERIF", Font.PLAIN, 20));
         area.setLineWrap(true);
         area.setWrapStyleWord(true);
-
+    
+        // Initialize WordCounter for this tab
+        wordCounter = new WordCounter(area, wordCountLabel);
+    
         JScrollPane scpane = new JScrollPane(area);
         int newIndex = tabbedPane.getTabCount();
         tabbedPane.addTab("New Document", scpane);
-
-        // Add a close button to the tab
+    
+        //add close button to the tab
         JPanel panel = new JPanel(new BorderLayout());
         JLabel label = new JLabel("New Document");
         JButton closeButton = new JButton("X");
-
+    
         closeButton.addActionListener(e -> closeTab(newIndex));
-
+    
         panel.add(label, BorderLayout.CENTER);
         panel.add(closeButton, BorderLayout.EAST);
-
+    
         tabbedPane.setTabComponentAt(newIndex, panel);
     }
 
@@ -71,6 +83,8 @@ public class Notepad extends JFrame implements ActionListener {
             JOptionPane.showMessageDialog(this, "You cannot close the last tab.", "Cannot Close", JOptionPane.WARNING_MESSAGE);
         }
     }
+
+
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -99,6 +113,10 @@ public class Notepad extends JFrame implements ActionListener {
                 break;
             case "Toggle Dark Mode":
                 themeManager.toggleTheme();
+                break;
+                case "Word Count":
+                JTextArea currentArea = (JTextArea) ((JScrollPane) tabbedPane.getSelectedComponent()).getViewport().getView();
+                new WordCounter(currentArea, wordCountLabel).showWordCountDialog(this);
                 break;
             case "Exit":
                 System.exit(0);
